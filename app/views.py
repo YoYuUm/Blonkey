@@ -1,5 +1,5 @@
 from app import app, db, login_manager
-from flask import render_template, request , redirect, g, flash, url_for
+from flask import render_template, request , redirect, g, flash, url_for, jsonify, json
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from forms import UserForm, LoginForm, PostForm, TagForm
 from models import User, Post, Tag
@@ -59,17 +59,19 @@ def login():
 
 #TODO: This view should manage editing of Tags as well, some sort of Manage tags to create and delete
 @app.route('/tags', methods=['GET','POST'])
-def addTag():
-    form = TagForm(request.form)
-    if request.method == 'POST' and form.validate():
-        tag = Tag()
-        form.populate_obj(tag)
-        db.session.add(tag)
-        db.session.commit()  
+def tags(): 
+    tags = Tag.query.all()
     return render_template('tag.html', 
-        title = 'Add Tag',
-        form = form,
+        title = 'Manage Tags',
+        tags = tags,
         user = g.user)
+
+@app.route('/tags/add')
+def addTags():
+    #TODO: Add tag to the db if user = admin
+    name = request.args.get("name")
+    print name
+    return jsonify(name = name)
 
 @app.route('/post/add', methods=['GET','POST'])
 def addPost():
@@ -80,23 +82,40 @@ def addPost():
         post.author_id = g.user.id
 #        post.timestamp = datetime.utcnow()
         db.session.add(post)
-        db.session.commit()  
+        db.session.commit()
+        return redirect(url_for("showPost", post_id=post.id))
     print db.session.query(Post).all()
     return render_template('addpost.html', 
         title = 'Add post',
         form = form,
         user = g.user)
 
-@app.route('/post/<int:id>')
-def showPost(id):
-    post = Post.query.filter_by(id=id).first()
+@app.route('/post/<int:post_id>')
+def showPost(post_id):
+    post = Post.query.filter_by(id=post_id).first()
     if post:
         return render_template('post.html', 
-        title = post.title,
-        post = post,
-        user = g.user)
+                            title = post.title,
+                            post = post,
+                            user = g.user)
     return redirect(url_for("index"))
 
-#To edit a post
-#@app.route("/post/<int:id>/edit")
+#To edit a post, if GET check author and refill, if POST check author and update
+@app.route("/post/<int:post_id>/edit", methods=['GET','POST'])
+def editPost(post_id):
+    post = Post.query.filter_by(id=post_id).first_or_404()
+    if (post.author.id == g.user.id):
+        form = PostForm(request.form, obj=post)
+        if request.method == 'POST' and form.validate(): 
+            form.populate_obj(post)
+            db.session.add(post)
+            db.session.commit()
+            
+        return render_template('addpost.html', 
+                            title = post.title,
+                            form = form,
+                            user = g.user)
+        
+    return redirect(url_for("index"))
 
+#TODO Logout, search

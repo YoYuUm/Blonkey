@@ -2,13 +2,59 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Add Tag</h1>
-<form action="" method="post" name="login">
-   
+<script type=text/javascript>
+  $(function() {
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+    $("#submitAdd").click(function() {
+/*
+         $.ajax({
+            type: "POST",
+            url: $SCRIPT_ROOT + "/tags/add",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: { "name": $('input[id="tagName"]').val() },
+            success: function(data) {
+                console.log("Ajax successful, adding to list");
+                $('#tags').text(JSON.parse(data.name));
+            }
+        });  
+*/
+    $.getJSON($SCRIPT_ROOT + '/tags/add', {
+        name: $('input[id="tagName"]').val(),
+      }, function(data) {
+        $("#tags").append("<p>"+data.name+"</p>");
+      });   
+    });
+
+    $("#submitDel").click(function() {
+         $.ajax({
+            type: "POST",
+            url: $SCRIPT_ROOT + "/tags/del",
+            contentType: "application/json; charset=utf-8",
+            data: { "name": $('input[id="tagName"]').val() },
+            success: function(data) {
+                $('#tags').text(data.value);
+            }
+        });     
+    });
+  });
+</script>
+
+<h1>Manage Tags</h1>
     <p>
-        Name:<br>
-        {{form.name(size=32)}}<br>
+        Tag name:<br>
+        <input type="text" size="32" id="tagName"/><br>
     </p>
-    <p><input type="submit" value="Add Tag"></p>
-</form>
+    <p>
+        <button type="submit" id="submitAdd" value="add"> Add Tag </button>
+        <button type="submit" id="submitDel" value="delete">Delete Tag</button>
+    </p>
+
+<h2>Available Tags</h2>
+    <div id="tags">
+    {% for tag in tags %}
+            <p>{{tag.name}}</p>
+    {% endfor %}
+    </div>
 {% endblock %}
