@@ -17,8 +17,6 @@ def before_request():
 @app.route('/index')
 @app.route('/page/<int:page>')
 def index(page = 1):
-    #Fake data for testing propuse
-    #posts = db.query(Post).order_by(Post.id).all().paginate(page,POSTS_PER_PAGE,False).items #You need a BaseQuery object, this way you have a Query
     posts = Post.query.order_by(Post.id).paginate(page,POSTS_PER_PAGE,False)
     user = g.user
     return render_template("index.html",
@@ -59,7 +57,8 @@ def login():
         title = 'Log in',
         form = form)
 
-@app.route('/addtag', methods=['GET','POST'])
+#TODO: This view should manage editing of Tags as well, some sort of Manage tags to create and delete
+@app.route('/tags', methods=['GET','POST'])
 def addTag():
     form = TagForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -72,7 +71,7 @@ def addTag():
         form = form,
         user = g.user)
 
-@app.route('/addpost', methods=['GET','POST'])
+@app.route('/post/add', methods=['GET','POST'])
 def addPost():
     form = PostForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -87,4 +86,17 @@ def addPost():
         title = 'Add post',
         form = form,
         user = g.user)
+
+@app.route('/post/<int:id>')
+def showPost(id):
+    post = Post.query.filter_by(id=id).first()
+    if post:
+        return render_template('post.html', 
+        title = post.title,
+        post = post,
+        user = g.user)
+    return redirect(url_for("index"))
+
+#To edit a post
+#@app.route("/post/<int:id>/edit")
 
