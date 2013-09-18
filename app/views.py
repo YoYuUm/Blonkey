@@ -19,7 +19,7 @@ def before_request():
 def index(page = 1):
     #Fake data for testing propuse
     #posts = db.query(Post).order_by(Post.id).all().paginate(page,POSTS_PER_PAGE,False).items #You need a BaseQuery object, this way you have a Query
-    posts = Post.query.order_by(Post.id).paginate(page,POSTS_PER_PAGE,False).items
+    posts = Post.query.order_by(Post.id).paginate(page,POSTS_PER_PAGE,False)
     user = g.user
     return render_template("index.html",
         title = "Home",
@@ -87,3 +87,4 @@ def addPost():
         title = 'Add post',
         form = form,
         user = g.user)
+

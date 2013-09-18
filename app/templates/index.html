@@ -1,7 +1,23 @@
 {% extends "base.html" %}
     {% block content %}
         <h1>Hi, {{user.nickname}}!</h1>
-        {% for post in posts %}
-            <div><p>{{post.author.nickname}} says: <b>{{post.text}}</b></p></div>
+        {% for post in posts.items %}
+            <div><p>{{post.author.nickname}} says: <b>{{post.text[:100]}}</b></p></div>
         {% endfor %}
-    {% endblock %}
+        <!-- Pagination -->
+  <div class=pagination>
+  {%- for page in posts.iter_pages() %}
+    {% if page %}
+      {% if page != posts.page %}
+        <a href="{{ url_for('index', page=page) }}">{{ page }}</a>
+      {% else %}
+        <strong>{{ page }}</strong>
+      {% endif %}
+    {% else %}
+      <span class=ellipsis>…</span>
+    {% endif %}
+  {%- endfor %}
+  </div>
+ <!--       {% if posts.has_prev %}<a href="{{ url_for('index', page = posts.prev_num) }}"><< Newer posts</a>{% else %}<< Newer posts{% endif %} | 
+        {% if posts.has_next %}<a href="{{ url_for('index', page = posts.next_num) }}">Older posts >></a>{% else %}Older posts >>{% endif %} -->
+{% endblock %}
