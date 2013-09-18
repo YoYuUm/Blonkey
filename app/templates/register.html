@@ -1,0 +1,21 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Sign In</h1>
+<p>This template is for the creation of users, must be unaccessible by default</p>
+<form action="" method="post" name="login">
+   
+    <p>
+        Please enter your Nickname:<br>
+        {{form.nickname(size=80)}}<br>
+        Password:<br>
+        {{form.password(size=100)}}<br>
+        Email:<br>
+        {{form.email(size=80)}}<br>
+        User will be admin?<br> <!-- For testing purposes, remove this option -->
+        {{form.role()}}
+    </p>
+    <p><input type="submit" value="Sign In"></p>
+</form>
+{% endblock %}

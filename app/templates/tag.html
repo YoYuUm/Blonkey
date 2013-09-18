@@ -1,0 +1,14 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add Tag</h1>
+<form action="" method="post" name="login">
+   
+    <p>
+        Name:<br>
+        {{form.name(size=32)}}<br>
+    </p>
+    <p><input type="submit" value="Add Tag"></p>
+</form>
+{% endblock %}
