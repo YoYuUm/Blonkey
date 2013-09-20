@@ -1,0 +1,10 @@
+<!-- post base template -->
+            <div>
+              <a href="{{url_for('showPost', post_id=post.id)}}">
+                <h3>{{post.title}}</h3>
+              </a>
+              <p>{{post.text[:(charLimit or None)]}}</p>
+              <div id="postFooter">
+                <p>Published by {{post.author.nickname}}</p>
+              </div>
+           </div>

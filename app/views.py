@@ -19,10 +19,11 @@ def before_request():
 def index(page = 1):
     posts = Post.query.order_by(Post.id).paginate(page,POSTS_PER_PAGE,False)
     user = g.user
-    return render_template("index.html",
-        title = "Home",
+    return render_template('index.html',
+        title = 'Home',
         user = user,
-        posts = posts)
+        posts = posts,
+        charLimit = 100)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -50,7 +51,7 @@ def login():
                 login_user(user, form.remember.data)
                 return redirect(request.args.get('next') or url_for('index'))
             else:
-                flash("Password is not correct")
+                flash('Password is not correct')
         else:
             flash("Username doesn't exist")
     return render_template('login.html', 
@@ -59,6 +60,7 @@ def login():
 
 #TODO: This view should manage editing of Tags as well, some sort of Manage tags to create and delete
 @app.route('/tags', methods=['GET','POST'])
+@login_required
 def tags(): 
     tags = Tag.query.all()
     return render_template('tag.html', 
@@ -67,9 +69,10 @@ def tags():
         user = g.user)
 
 @app.route('/tags/add')
+@login_required
 def addTags():
     #TODO: Add tag to the db if user = admin
-    name = request.args.get("name")
+    name = request.args.get('name')
     tag = Tag()  
     tag.name = name  #I'm skipping the verification ... (wrong)
     db.session.add(tag)
@@ -78,6 +81,7 @@ def addTags():
     return jsonify(id=tag2.id, name = name)
 
 @app.route('/tags/del')
+@login_required
 def delTags():
     #TODO: Add tag to the db if user = admin
     tag_id = request.args.get("id")
@@ -86,9 +90,10 @@ def delTags():
         db.session.delete(tag)
         db.session.commit();
         return jsonify(id= tag.id)
-    return redirect(url_for("addTags")) 
+    return redirect(url_for('addTags')) 
 
 @app.route('/post/add', methods=['GET','POST'])
+@login_required
 def addPost():
     form = PostForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -98,8 +103,7 @@ def addPost():
 #        post.timestamp = datetime.utcnow()
         db.session.add(post)
         db.session.commit()
-        return redirect(url_for("showPost", post_id=post.id))
-    print db.session.query(Post).all()
+        return redirect(url_for('showPost', post_id=post.id))
     return render_template('addpost.html', 
         title = 'Add post',
         form = form,
@@ -117,6 +121,7 @@ def showPost(post_id):
 
 #To edit a post, if GET check author and refill, if POST check author and update
 @app.route("/post/<int:post_id>/edit", methods=['GET','POST'])
+@login_required
 def editPost(post_id):
     post = Post.query.filter_by(id=post_id).first_or_404()
     if (post.author.id == g.user.id):
@@ -131,6 +136,26 @@ def editPost(post_id):
                             form = form,
                             user = g.user)
         
-    return redirect(url_for("index"))
+    return redirect(url_for('index'))
 
-#TODO Logout, search, forceLogin
+@app.route("/post/search", methods=['GET'])
+@app.route("/post/search/page/<int:page>", methods=['GET'])
+def postSearch(page = 1, kw=""):
+    if (kw == ""):
+        kw = request.args.get('kw')
+    posts = Post.query.search(kw).paginate(page,POSTS_PER_PAGE,False)
+    return render_template("searchPosts.html",
+        title = 'Searching %s' % kw,
+        posts = posts,
+        kw = kw,
+        charLimit = 100
+        )
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Successfully logged out')
+    return redirect(url_for('index'))
+
+#TODO edit tags, delete post, forceLogin, tests

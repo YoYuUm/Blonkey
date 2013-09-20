@@ -1,14 +1,16 @@
 from app import db
-#import sqlalchemy as db
-from config import SQLALCHEMY_DATABASE_URI
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
+#from config import SQLALCHEMY_DATABASE_URI
+#from sqlalchemy import create_engine
+#from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy_utils import PasswordType
+from sqlalchemy_utils.types import PasswordType
+from sqlalchemy_searchable import Searchable, SearchQueryMixin
+from sqlalchemy_utils.types import TSVectorType
+from flask.ext.sqlalchemy import SQLAlchemy, BaseQuery
 from wtforms_alchemy import ModelForm
 
-engine = create_engine(SQLALCHEMY_DATABASE_URI)
-base = declarative_base(db)
+#engine = create_engine(SQLALCHEMY_DATABASE_URI)
+#base = declarative_base(db)
 #Session = sessionmaker(bind=db)
 #session = Session()
 
@@ -54,8 +56,17 @@ association_table = db.Table('association',
     db.Column('tag_id',db.Integer, db.ForeignKey('tag.id'))
 )
 
-class Post(db.Model):   
+class PostQuery(BaseQuery, SearchQueryMixin):
+    pass
+
+class Post(db.Model, Searchable):   
+    query_class = PostQuery
     __tablename__ = "post"
+    __searchable_columns__ = ['title', 'text']
+
+    __search_options__ = {
+        'catalog': 'pg_catalog.english'
+    }
 
     id = db.Column(db.Integer, autoincrement=True, primary_key = True)
     title = db.Column(db.String(128), nullable = False)
@@ -63,6 +74,8 @@ class Post(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     tags = relationship("Tag", secondary=association_table, backref="posts")
     timestamp = db.Column(db.DateTime)
+    #search_vector is the default name of the var vector in SQLalchemy
+    search_vector= db.Column(TSVectorType) 
     def __repr__(self):
         return '<Id %r, Title %r, Author %r, tags %r> ' % (self.id, self.title, self.author, self.tags)
 

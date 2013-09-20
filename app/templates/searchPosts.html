@@ -1,13 +1,13 @@
 {% extends "base.html" %}
-    {% block content %}
-        <h1>Hi, {{user.nickname}}!</h1>
-        {% include "showposts.html" %}
+{% block content %}
+        <h1>Search results for {{kw}}</h1>
+        {% include showposts.html %}
         <!-- Pagination -->
   <div class=pagination>
   {%- for page in posts.iter_pages() %}
     {% if page %}
       {% if page != posts.page %}
-        <a href="{{ url_for('index', page=page) }}">{{ page }}</a>
+        <a href="{{ url_for('postSearch', page=page, kw=kw) }}">{{ page }}</a>
       {% else %}
         <strong>{{ page }}</strong>
       {% endif %}
@@ -16,4 +16,5 @@
     {% endif %}
   {%- endfor %}
   </div>
+        
 {% endblock %}

@@ -20,7 +20,7 @@
     <title>Blonkey</title>
     {% endif %}
   </head>
-  
+
   <body>
     <div>Blonkey: <a href="/index">Home</a></div>
     <hr>
@@ -33,6 +33,12 @@
             </div>
         {% endfor %}
     {% endwith %}
+    </div>
+    <div id="search">
+        <form action="/post/search" method="get" class="">
+                                <input type="text" name="kw" class="search-query" placeholder="Search">
+                                <input type="submit" value="Search" class="btn">
+        </form>
     </div>
     {% block content %}{% endblock %}
   </body>
