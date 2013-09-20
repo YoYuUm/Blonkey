@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
         <h1>Search results for {{kw}}</h1>
-        {% include showposts.html %}
+        {% include "showposts.html" %}
         <!-- Pagination -->
   <div class=pagination>
   {%- for page in posts.iter_pages() %}

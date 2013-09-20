@@ -2,7 +2,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Add Tag</h1>
+    {% if edit %}
+    <h1>Edit post</h1>
+    {% else %}
+    <h1>Add post</h1>
+    {% endif %}
+
 <form action="" method="post" name="send post">
    
     <p>
@@ -13,6 +18,12 @@
         tags:<br>
         {{form.tags}}<br>
     </p>
-    <p><input type="submit" value="Add Post"></p>
+    <p>
+        <input type="submit" value="Send"/> 
+    </p>
 </form>
+{% if edit %}
+    <a href="{{url_for('deletePost',post_id=edit)}}" class="btn btn-danger"> Delete post </a>
+{% endif %}
 {% endblock %}
+

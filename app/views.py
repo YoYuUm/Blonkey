@@ -2,7 +2,7 @@ from app import app, db, login_manager
 from flask import render_template, request , redirect, g, flash, url_for, jsonify, json
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from forms import UserForm, LoginForm, PostForm, TagForm
-from models import User, Post, Tag
+from models import User, Post, Tag, ROLE_USER, ROLE_ADMIN
 from config import POSTS_PER_PAGE
 
 @login_manager.user_loader
@@ -33,7 +33,6 @@ def register():
         form.populate_obj(user)
         db.session.add(user)
         db.session.commit()
-        print db.session.query(User).all()
         return render_template('confirmation.html')
     return render_template('register.html', 
         title = 'Sign In',
@@ -61,9 +60,9 @@ def login():
 #TODO: This view should manage editing of Tags as well, some sort of Manage tags to create and delete
 @app.route('/tags', methods=['GET','POST'])
 @login_required
-def tags(): 
+def manageTags(): 
     tags = Tag.query.all()
-    return render_template('tag.html', 
+    return render_template('managetags.html', 
         title = 'Manage Tags',
         tags = tags,
         user = g.user)
@@ -90,7 +89,41 @@ def delTags():
         db.session.delete(tag)
         db.session.commit();
         return jsonify(id= tag.id)
-    return redirect(url_for('addTags')) 
+    return redirect(url_for('manageTags'))
+
+@app.route('/tags/<int:tag_id>')
+def showTag(tag_id, page=1):
+    tag = Tag.query.filter_by(id=tag_id).first()
+    if tag:
+        posts = Post.query.filter(Post.tags.any(Tag.name == tag.name)).paginate(page,POSTS_PER_PAGE,False)
+        return render_template('tag.html', 
+                            title = tag.name,
+                            tag = tag,
+                            posts = posts,
+                            user = g.user,
+                            charLimit = 100)
+    return redirect(url_for("index"))    
+
+@app.route("/tags/<int:tag_id>/edit", methods=['GET','POST'])
+@login_required
+def editTag(tag_id):
+    tag = Tag.query.filter_by(id=tag_id).first_or_404()
+    if (g.user.role == ROLE_ADMIN):
+        form = TagForm(request.form, obj=tag)
+        if request.method == 'POST' and form.validate(): 
+            form.populate_obj(tag)
+            db.session.add(tag)
+            db.session.commit()
+            return redirect(url_for('showTag', tag_id=tag.id))
+            
+        return render_template('editTag.html', 
+                            title = tag.name,
+                            form = form,
+                            user = g.user)
+        
+    return redirect(url_for('index'))
+
+
 
 @app.route('/post/add', methods=['GET','POST'])
 @login_required
@@ -124,18 +157,30 @@ def showPost(post_id):
 @login_required
 def editPost(post_id):
     post = Post.query.filter_by(id=post_id).first_or_404()
-    if (post.author.id == g.user.id):
+    if ((post.author.id == g.user.id) or g.user.role == ROLE_ADMIN):
         form = PostForm(request.form, obj=post)
         if request.method == 'POST' and form.validate(): 
             form.populate_obj(post)
             db.session.add(post)
             db.session.commit()
+            return redirect(url_for('showPost', post_id=post.id))
             
         return render_template('addpost.html', 
                             title = post.title,
                             form = form,
-                            user = g.user)
+                            user = g.user,
+                            edit = post_id)
         
+    return redirect(url_for('index'))
+
+@app.route("/post/<int:post_id>/delete")
+@login_required
+def deletePost(post_id):
+    post = Post.query.filter_by(id=post_id).first_or_404()
+    if ((post.author.id == g.user.id) or g.user.role == ROLE_ADMIN):
+        db.session.delete(post)
+        db.session.commit()
+        flash("Post %s has been deleted successfully" % post.title)
     return redirect(url_for('index'))
 
 @app.route("/post/search", methods=['GET'])
@@ -158,4 +203,4 @@ def logout():
     flash('Successfully logged out')
     return redirect(url_for('index'))
 
-#TODO edit tags, delete post, forceLogin, tests
+#TODO tests

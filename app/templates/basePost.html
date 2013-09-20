@@ -5,6 +5,17 @@
               </a>
               <p>{{post.text[:(charLimit or None)]}}</p>
               <div id="postFooter">
-                <p>Published by {{post.author.nickname}}</p>
+                <p>Tags:
+                    {% for tag in post.tags %}
+                        <a href="{{url_for('showTag', tag_id=tag.id)}}">{{tag.name}}</a>
+                    {% endfor %}
+                <br/>
+                Published by {{post.author.nickname}}</p>
+
               </div>
+              {% if (user.id == post.author.id) or (user.role == 1) %}
+                    <a href="{{url_for('editPost', post_id=post.id)}}">
+                        Edit post
+                    </a>
+              {% endif %}
            </div>

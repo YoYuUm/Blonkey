@@ -1,72 +1,23 @@
-<!-- extend from base layout -->
 {% extends "base.html" %}
-
 {% block content %}
-<script type=text/javascript>
-  $(function() {
-    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-
-    $("#submitAdd").click(function() {
-        $.getJSON($SCRIPT_ROOT + '/tags/add', {
-            name: $('input[id="tagName"]').val(),
-          }, function(data) {
-            addToTagsList(data);
-          });   
-    });
-
-    $("#submitDel").click(function() {
-        $.getJSON($SCRIPT_ROOT + '/tags/del', {
-            name: $('input[id="tagName"]').val(),
-          }, function(data) {
-            $(".tag #"+data.id).remove();
-          });   
-    });
-  });
-</script>
-
-<script>
-  //Functions
-    function deleteTag(object){
-    //Gets a button object as parameter and check the ID of the parent
-    //which is the same than the ID of the object to delete
-        tag_id = object.parentNode.id
-        $.getJSON($SCRIPT_ROOT + '/tags/del', {
-            id: tag_id,
-          }, function(data) {
-                console.log("Tag has been deleted")
-          });
-    }
-
-    function addToTagsList(tag){
-        $("#tags").append($("<span></span>")
-                                        .attr("id",tag.id)
-                                        .attr("class","tag")
-                            .html('<button type="button" class="close" data-dismiss="alert" onclick="deleteTag(this)">&times;</button>')
-                            .append('<label>'+tag.name+'</label>'))    
-                                
-    }
-</script>
-
-<h1>Manage Tags</h1>
-    <p>Tag name:<br>
-        <input type="text" size="32" id="tagName"/><br>
-    </p>
-    <p>
-        <button type="submit" id="submitAdd" value="add"> Add Tag </button>
-        <button type="submit" id="submitDel" value="delete">Delete Tag</button>
-    </p>
-
-<h2>Available Tags</h2>
-    <div id="tags">
-
-    </div>
-
-    {% for tag in tags %}
-        <script>
-            tag= new Object();
-            tag.id = "{{tag.id}}" ;
-            tag.name = "{{tag.name}}" ;
-            addToTagsList(tag);
-        </script>
-    {% endfor %}
+        <h1>Post with the tag {{tag.name}}:</h1>
+        {% if user.role == 1 %}
+            <a href="{{url_for('editTag',tag_id=tag.id)}}" class="btn btn-danger"> Edit tag name </a>
+        {% endif %}
+        {% include "showposts.html" %}
+        <!-- Pagination -->
+  <div class=pagination>
+  {%- for page in posts.iter_pages() %}
+    {% if page %}
+      {% if page != posts.page %}
+        <a href="{{ url_for('showTag', tag_id=tag.id, page=page) }}">{{ page }}</a>
+      {% else %}
+        <strong>{{ page }}</strong>
+      {% endif %}
+    {% else %}
+      <span class=ellipsis>…</span>
+    {% endif %}
+  {%- endfor %}
+  </div>
+        
 {% endblock %}
