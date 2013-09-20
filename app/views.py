@@ -70,8 +70,23 @@ def tags():
 def addTags():
     #TODO: Add tag to the db if user = admin
     name = request.args.get("name")
-    print name
-    return jsonify(name = name)
+    tag = Tag()  
+    tag.name = name  #I'm skipping the verification ... (wrong)
+    db.session.add(tag)
+    db.session.commit()
+    tag2= Tag.query.filter_by(name=name).first() #2nd access to the db to get to generated ID... not so nice
+    return jsonify(id=tag2.id, name = name)
+
+@app.route('/tags/del')
+def delTags():
+    #TODO: Add tag to the db if user = admin
+    tag_id = request.args.get("id")
+    tag = Tag.query.filter_by(id=tag_id).first()
+    if tag:
+        db.session.delete(tag)
+        db.session.commit();
+        return jsonify(id= tag.id)
+    return redirect(url_for("addTags")) 
 
 @app.route('/post/add', methods=['GET','POST'])
 def addPost():
@@ -118,4 +133,4 @@ def editPost(post_id):
         
     return redirect(url_for("index"))
 
-#TODO Logout, search
+#TODO Logout, search, forceLogin

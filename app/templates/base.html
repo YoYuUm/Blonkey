@@ -1,24 +1,39 @@
 <html>
   <head>
+    <link href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" rel="stylesheet">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+     $(document).on("ready",start);
+     function start(){
+        function sAlert(message){
+        $("#alert").append($('<div class="alert fade in"></div>')
+                                            .html('<button type="button" class="close" data-dismiss="alert">&times;</button>')
+                                            .append($("<div></div>").text(message)));
+        }
+    }
+    </script>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}" type="text/javascript"></script>
+
     {% if title %}
     <title>{{title}} - Blonkey</title>
     {% else %}
     <title>Blonkey</title>
     {% endif %}
   </head>
+  
   <body>
     <div>Blonkey: <a href="/index">Home</a></div>
     <hr>
+    <div id="alert">
     {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-    {% for message in messages %}
-        <li>{{ message }} </li>
-    {% endfor %}
-    </ul>
-    {% endif %}
+        {% for message in messages %}
+            <div class="alert fade in">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>'
+                <div>{{ message }} </div>
+            </div>
+        {% endfor %}
     {% endwith %}
+    </div>
     {% block content %}{% endblock %}
   </body>
 </html>
