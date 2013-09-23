@@ -3,7 +3,7 @@ from flask import render_template, request , redirect, g, flash, url_for, jsonif
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from forms import UserForm, LoginForm, PostForm, TagForm
 from models import User, Post, Tag, ROLE_USER, ROLE_ADMIN
-from config import POSTS_PER_PAGE
+from config import POSTS_PER_PAGE, CHARS_PER_POST_PREVIEW
 
 @login_manager.user_loader
 def load_user(userid):
@@ -16,14 +16,15 @@ def before_request():
 @app.route('/')
 @app.route('/index')
 @app.route('/page/<int:page>')
-def index(page = 1):
+def index( page = 1 ):
     posts = Post.query.order_by(Post.id).paginate(page,POSTS_PER_PAGE,False)
     user = g.user
     return render_template('index.html',
         title = 'Home',
         user = user,
         posts = posts,
-        charLimit = 100)
+        charLimit = CHARS_PER_POST_PREVIEW,
+        endpoint= 'index')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -36,6 +37,7 @@ def register():
         return render_template('confirmation.html')
     return render_template('register.html', 
         title = 'Sign In',
+        user = g.user,
         form = form)
 
 
@@ -55,45 +57,61 @@ def login():
             flash("Username doesn't exist")
     return render_template('login.html', 
         title = 'Log in',
+        user = g.user,
         form = form)
 
 #TODO: This view should manage editing of Tags as well, some sort of Manage tags to create and delete
 @app.route('/tags', methods=['GET','POST'])
 @login_required
-def manageTags(): 
-    tags = Tag.query.all()
-    return render_template('managetags.html', 
-        title = 'Manage Tags',
-        tags = tags,
-        user = g.user)
+def manageTags():
+    if (g.user.role == ROLE_ADMIN):
+        form = TagForm()
+        tags = Tag.query.all()
+        return render_template('managetags.html', 
+            title = 'Manage Tags',
+            tags = tags,
+            user = g.user,
+            form = form)
+    return redirect(url_for("index"))
 
-@app.route('/tags/add')
+#Called using AJAX
+@app.route('/tags/add', methods=['POST'])
 @login_required
 def addTags():
     #TODO: Add tag to the db if user = admin
-    name = request.args.get('name')
-    tag = Tag()  
-    tag.name = name  #I'm skipping the verification ... (wrong)
-    db.session.add(tag)
-    db.session.commit()
-    tag2= Tag.query.filter_by(name=name).first() #2nd access to the db to get to generated ID... not so nice
-    return jsonify(id=tag2.id, name = name)
-
+    if (g.user.role == ROLE_ADMIN):
+        form = TagForm(request.form)
+        print request.form
+        print request.data
+        print "error"
+        if request.method == 'POST' and form.validate():
+            tag = Tag()
+            form.populate_obj(tag)
+            db.session.add(tag)
+            db.session.commit()
+            return jsonify(id=tag.id, name = tag.name)
+        flash("Not valid tag")
+        return redirect(url_for("manageTags"))
+    return redirect(url_for("index"))
+  
+#Called using AJAX
 @app.route('/tags/del')
 @login_required
 def delTags():
     #TODO: Add tag to the db if user = admin
-    tag_id = request.args.get("id")
-    tag = Tag.query.filter_by(id=tag_id).first()
-    if tag:
-        db.session.delete(tag)
-        db.session.commit();
-        return jsonify(id= tag.id)
-    return redirect(url_for('manageTags'))
+    if (g.user.role == ROLE_ADMIN):
+        tag_id = request.args.get("id")
+        tag = Tag.query.filter_by(id=tag_id).first()
+        if tag:
+            db.session.delete(tag)
+            db.session.commit();
+            return jsonify(id= tag.id)
+        return redirect(url_for('manageTags'))
+    return redirect(url_for("index"))
 
-@app.route('/tags/<int:tag_id>')
-def showTag(tag_id, page=1):
-    tag = Tag.query.filter_by(id=tag_id).first()
+@app.route('/tags/<int:query>')
+def showTag(page=1, query=0): #Query is the ID number of the tag
+    tag = Tag.query.filter_by(id=query).first()
     if tag:
         posts = Post.query.filter(Post.tags.any(Tag.name == tag.name)).paginate(page,POSTS_PER_PAGE,False)
         return render_template('tag.html', 
@@ -101,7 +119,9 @@ def showTag(tag_id, page=1):
                             tag = tag,
                             posts = posts,
                             user = g.user,
-                            charLimit = 100)
+                            charLimit = CHARS_PER_POST_PREVIEW,
+                            endpoint = 'showTag',
+                            query = query)
     return redirect(url_for("index"))    
 
 @app.route("/tags/<int:tag_id>/edit", methods=['GET','POST'])
@@ -185,15 +205,17 @@ def deletePost(post_id):
 
 @app.route("/post/search", methods=['GET'])
 @app.route("/post/search/page/<int:page>", methods=['GET'])
-def postSearch(page = 1, kw=""):
-    if (kw == ""):
-        kw = request.args.get('kw')
-    posts = Post.query.search(kw).paginate(page,POSTS_PER_PAGE,False)
+def postSearch(page = 1, query = ""):
+    if (query == ""):
+        query = request.args.get('query')
+    posts = Post.query.search(query).paginate(page,POSTS_PER_PAGE,False)
     return render_template("searchPosts.html",
-        title = 'Searching %s' % kw,
+        title = 'Searching %s' % query,
         posts = posts,
-        kw = kw,
-        charLimit = 100
+        user = g.user,
+        query = query,
+        endpoint = "postSearch",
+        charLimit = CHARS_PER_POST_PREVIEW
         )
 
 @app.route('/logout')

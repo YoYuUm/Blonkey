@@ -7,7 +7,7 @@
               <div id="postFooter">
                 <p>Tags:
                     {% for tag in post.tags %}
-                        <a href="{{url_for('showTag', tag_id=tag.id)}}">{{tag.name}}</a>
+                        <a href="{{url_for('showTag', query=tag.id)}}">{{tag.name}}</a>
                     {% endfor %}
                 <br/>
                 Published by {{post.author.nickname}}</p>

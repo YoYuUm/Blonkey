@@ -1,19 +1,14 @@
 {% extends "base.html" %}
-    {% block content %}
-        <h1>Hi, {{user.nickname}}!</h1>
-        {% include "showposts.html" %}
-        <!-- Pagination -->
-  <div class=pagination>
-  {%- for page in posts.iter_pages() %}
-    {% if page %}
-      {% if page != posts.page %}
-        <a href="{{ url_for('index', page=page) }}">{{ page }}</a>
-      {% else %}
-        <strong>{{ page }}</strong>
-      {% endif %}
-    {% else %}
-      <span class=ellipsis>…</span>
-    {% endif %}
-  {%- endfor %}
-  </div>
+{% block jumbotron %}
+ <div class="jumbotron">
+              <div class="container">
+                <h1>Blonkey blog.</h1>
+                <p>This is a place for the description of the blog. You could talk about the kind of content, write a little biography about yourself. In fact, why don't I take advantage
+                  of the situation and I talk about myself?...</p>
+              </div>
+            </div>
+{% endblock%}
+{% block content %}
+  <h2>Lastests posts:</h2>           
+  {% include "showposts.html" %}
 {% endblock %}
