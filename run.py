@@ -3,5 +3,5 @@ from app import app
 import os
 if os.environ['PORT'] is None:
     app.run(debug = True)    
-else
+else:
     app.run(debug = True, port = os.environ['PORT'] )
