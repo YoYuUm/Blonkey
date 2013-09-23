@@ -1,3 +1,7 @@
 #!flask/bin/python
 from app import app
-app.run(debug = True)
+import os
+if os.environ['PORT'] is None:
+    app.run(debug = True)    
+else
+    app.run(debug = True, port = os.environ['PORT'] )
