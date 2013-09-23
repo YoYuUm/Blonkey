@@ -28,17 +28,19 @@ def index( page = 1 ):
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = UserForm(request.form)
-    if request.method == 'POST' and form.validate():
-        user = User()
-        form.populate_obj(user)
-        db.session.add(user)
-        db.session.commit()
-        return render_template('confirmation.html')
-    return render_template('register.html', 
-        title = 'Sign In',
-        user = g.user,
-        form = form)
+    if (g.user.role == ROLE_ADMIN):
+        form = UserForm(request.form)
+        if request.method == 'POST' and form.validate():
+            user = User()
+            form.populate_obj(user)
+            db.session.add(user)
+            db.session.commit()
+            flash('User %s created' % user.nickname)
+            return url_for('index')
+        return render_template('register.html', 
+            title = 'Sign In',
+            user = g.user,
+            form = form)
 
 
 
