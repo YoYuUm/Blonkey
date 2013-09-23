@@ -4,4 +4,4 @@ import os
 if os.environ['PORT'] is None:
     app.run(debug = True)    
 else:
-    app.run(debug = True, port = os.environ['PORT'] )
+    app.run(debug = True, port = int(os.environ['PORT']) )
