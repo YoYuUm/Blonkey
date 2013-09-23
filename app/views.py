@@ -26,20 +26,6 @@ def index( page = 1 ):
         charLimit = CHARS_PER_POST_PREVIEW,
         endpoint= 'index')
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    form = UserForm(request.form)
-    if request.method == 'POST' and form.validate():
-        user = User()
-        form.populate_obj(user)
-        db.session.add(user)
-        db.session.commit()
-        return render_template('confirmation.html')
-    return render_template('register.html', 
-        title = 'Sign In',
-        user = g.user,
-        form = form)
-
 
 
 @app.route('/login', methods=['GET','POST'])

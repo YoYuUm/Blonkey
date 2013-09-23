@@ -44,7 +44,6 @@
                               {% endif %}
                           {% else %}
                               <li {% if request.path == url_for('login') %}class="active"{% endif %}><a href="{{url_for('login')}}">Log In</a></li>
-                              <li {% if request.path == url_for('register') %}class="active"{% endif %}><a href="{{url_for('register')}}">Register</a></li>
                           {% endif %}
                           
                         </ul>
@@ -63,15 +62,19 @@
         
         <!-- Main body -->
         <div class="container">
-            <div class="alert alert-warning">
+            
            
                 {% with messages = get_flashed_messages() %}
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                
                     {% for message in messages %}
+                    <div class="alert alert-warning">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
                         <p>{{ message }}</p>
+                    </div>
                     {% endfor %}
+                  
                 {% endwith %}
-            </div>
+            
             
             {% block content %}{% endblock %}
         </div>

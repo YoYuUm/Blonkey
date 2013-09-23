@@ -2,8 +2,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Sign In</h1>
-<p>This template is for the creation of users, must be unaccessible by default</p>
+<h1>Create a new user:</h1>
 <form action="" method="post" name="login">
    
     <p>
@@ -13,8 +12,6 @@
         {{form.password(size=100)}}<br>
         Email:<br>
         {{form.email(size=80)}}<br>
-        User will be admin?<br> <!-- For testing purposes, remove this option -->
-        {{form.role()}}
     </p>
     <p><input type="submit" value="Sign In"></p>
 </form>
