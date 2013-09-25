@@ -30,13 +30,16 @@ def index( page = 1 ):
 def register():
     if (g.user.role == ROLE_ADMIN):
         form = UserForm(request.form)
-        if request.method == 'POST' and form.validate():
+        if request.method == 'POST' and form.validate():    
             user = User()
             form.populate_obj(user)
             db.session.add(user)
             db.session.commit()
             flash('User %s created' % user.nickname)
-            return url_for('index')
+            return redirect(url_for('index'))
+        else:
+                #This can be improved recignizing errors such Username in use, repeated mail.. 
+            flash('Error while creating user')
         return render_template('register.html', 
             title = 'Sign In',
             user = g.user,
@@ -83,9 +86,6 @@ def addTags():
     #TODO: Add tag to the db if user = admin
     if (g.user.role == ROLE_ADMIN):
         form = TagForm(request.form)
-        print request.form
-        print request.data
-        print "error"
         if request.method == 'POST' and form.validate():
             tag = Tag()
             form.populate_obj(tag)

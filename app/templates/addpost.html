@@ -12,11 +12,11 @@
    
     <p>
         Title:<br>
-        {{form.title(size=128)}}<br>
+        {{ form.title(class="col-md-12")}}<br>
         Content:<br>
-        {{form.text}}<br>
+        {{ form.text(class="col-md-12") }}<br>
         tags:<br>
-        {{form.tags}}<br>
+        {{ form.tags(class="col-md-6") }}<br>
     </p>
     <p>
         <input type="submit" value="Send"/> 

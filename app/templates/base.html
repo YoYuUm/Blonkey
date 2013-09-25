@@ -63,7 +63,7 @@
         
         <!-- Main body -->
         <div class="container">
-                  
+            <div id="margins" class="col-md-10 col-md-offset-1">
                 {% with messages = get_flashed_messages() %}
                
                     {% for message in messages %}
@@ -75,6 +75,7 @@
                 {% endwith %}
             
             {% block content %}{% endblock %}
+            </div>
         </div>
 
 

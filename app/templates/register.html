@@ -7,14 +7,22 @@
 <form action="" method="post" name="login">
    
     <p>
-        Please enter the Nickname:<br>
-        {{form.nickname(size=80)}}<br>
-        Password:<br>
-        {{form.password(size=100)}}<br>
-        Email:<br>
-        {{form.email(size=80)}}<br>
-        User will be admin?<br> 
+        <p>
+        Please enter the Nickname:<br/>
+        {{form.nickname(class="col-md-6")}}<br/>
+        </p>
+        <p>
+        Password:<br/>
+        {{form.password(class="col-md-6")}}<br/>
+        </p>
+        <p>
+        Email:<br/>
+        {{form.email(class="col-md-6")}}<br/>
+        </p>
+        <p>
+        User will be admin?<br/> 
         {{form.role()}}
+        </p>
     </p>
     <p><input type="submit" value="Create user"></p>
 </form>
