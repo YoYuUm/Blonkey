@@ -5,9 +5,8 @@
               </a>
               <p>{{post.text[:(charLimit or None)]}}</p>
               <div id="postFooter">
-                <p>Tags:
-                    {% for tag in post.tags %}
-                        <a href="{{url_for('showTag', query=tag.id)}}">{{tag.name}}</a>
+                <p>{% for tag in post.tags %}
+                        <span class="label label-success"><a href="{{url_for('showTag', query=tag.id)}}">{{tag.name}}</a></span>
                     {% endfor %}
                 <br/>
                 Published by {{post.author.nickname}}</p>

@@ -9,10 +9,15 @@
     $("#submitAdd").click(function(event) {
         event.preventDefault();
         event.stopPropagation();
-        if ($('input[id="name"]').val() != "")
-            $.post('/tags/add',$('input[id="name"]').serialize(), function(data) {
+        inputTag=$('input[id="name"]')
+        if (inputTag.val() != "")
+            $.post('/tags/add',inputTag.serialize(), function(data) {
                 addToTagsList(data);
-              });   
+                inputTag.val('')
+                inputTag.prop("disabled",false)
+              });
+        inputTag.val('Sending tag...')
+        inputTag.prop("disabled",true)   
     });
   });
 </script>
@@ -22,6 +27,7 @@
     function deleteTag(object){
     //Gets a button object as parameter and check the ID of the parent
     //which is the same than the ID of the object to delete
+    //It would be nice to add an "Are you sure to delete?" option
         tag_id = object.parentNode.id
         $.getJSON('/tags/del', {
             id: tag_id,
@@ -31,13 +37,13 @@
     }
 
     function addToTagsList(tag){
-        $("#tags").append($('<span></span>')
+        $("#tags").append($('<label></label>')
                                         .attr("id",tag.id)
-                                        .attr("class","tag col-md-3 col-md-offset-1 label label-success")
-                                        .css("margin-top", "10")
-                                        .css("font-size", "16")
-                            .html('<button type="button" class="close" data-dismiss="alert" onclick="deleteTag(this)">&times;</button>')
-                            .append('<a href=/tags/'+tag.id+' class="label"><strong>'+tag.name+'</strong></a>'))    
+                                        .attr("class","tag label label-success")
+                                        .css("margin", "10 10")
+                                        .css("font-size", "14")
+                            .html('<a href=/tags/'+tag.id+'>'+tag.name+'</a>')
+                            .append('<button type="button" class="close" style="float:none" data-dismiss="alert" onclick="deleteTag(this)">&times;</button>'))    
                                 
     }
 </script>
@@ -54,6 +60,7 @@
 
 
 <h2>Available Tags</h2>
+    <p>To delete a tag click in the &times; simbol. Be careful, if you delete a tag it will desappear from all the post the tag was used in. </p>
     <div id="tags">
      
     </div>
