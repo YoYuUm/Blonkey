@@ -47,6 +47,14 @@ def register():
             form = form)
 
 
+def check_user(user):
+    if user == None :
+        flash("Username doesn't exist")
+        return False
+    elif user.password != form.password.data:
+        flash('Password is not correct')
+        return False
+    return True
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -230,11 +238,11 @@ def logout():
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template('404.html'), 404
+    return render_template('404.html', user = g.user), 404
 
 @app.errorhandler(500)
 def internal_error(error):
     #SQLAlchemy should take care of the rollback
-    return render_template('500.html'), 500
+    return render_template('500.html', user = g.user), 500
 
 #TODO tests
