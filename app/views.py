@@ -30,16 +30,17 @@ def index( page = 1 ):
 def register():
     if (g.user.role == ROLE_ADMIN):
         form = UserForm(request.form)
-        if request.method == 'POST' and form.validate():    
-            user = User()
-            form.populate_obj(user)
-            db.session.add(user)
-            db.session.commit()
-            flash('User %s created' % user.nickname)
-            return redirect(url_for('index'))
-        else:
+        if request.method == 'POST':    
+            if form.validate():
+                user = User()
+                form.populate_obj(user)
+                db.session.add(user)
+                db.session.commit()
+                flash('User %s created' % user.nickname)
+                return redirect(url_for('index'))
+            else:
                 #This can be improved recignizing errors such Username in use, repeated mail.. 
-            flash('Error while creating user')
+                flash('Error while creating user')
         return render_template('register.html', 
             title = 'Sign In',
             user = g.user,
@@ -233,6 +234,7 @@ def page_not_found(error):
 
 @app.errorhandler(500)
 def internal_error(error):
+    #SQLAlchemy should take care of the rollback
     return render_template('500.html'), 500
 
 #TODO tests
