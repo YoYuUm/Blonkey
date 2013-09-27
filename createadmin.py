@@ -5,6 +5,6 @@ user = User()
 user.nickname = "admin"
 user.email = "admin@admin.com"
 user.password = "FastMonkeys"
-user.role = 1;
+user.role = 1
 db.session.add(user)
 db.session.commit()

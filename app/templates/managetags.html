@@ -12,12 +12,15 @@
         inputTag=$('input[id="name"]')
         if (inputTag.val() != "")
             $.post('/tags/add',inputTag.serialize(), function(data) {
-                addToTagsList(data);
-                inputTag.val('')
-                inputTag.prop("disabled",false)
+                if (data.error)
+                    alert(data.error);
+                else
+                    addToTagsList(data);
+                inputTag.val('');
+                inputTag.prop("disabled",false);
               });
-        inputTag.val('Sending tag...')
-        inputTag.prop("disabled",true)   
+        inputTag.val('Sending tag...');
+        inputTag.prop("disabled",true);
     });
   });
 </script>
@@ -29,10 +32,13 @@
     //which is the same than the ID of the object to delete
     //It would be nice to add an "Are you sure to delete?" option
         tag_id = object.parentNode.id
-        $.getJSON('/tags/del', {
+        $.post('/tags/del', {
             id: tag_id,
           }, function(data) {
-                console.log("Tag has been deleted")
+                if (data.error)
+                    alert(data.error);
+                else
+                    console.log("Tag has been deleted")
           });
     }
 
