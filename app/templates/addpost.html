@@ -7,23 +7,24 @@
     {% else %}
     <h1>Add post</h1>
     {% endif %}
-
-<form action="" method="post" name="send post">
-   
-    <p>
-        Title:<br>
-        {{ form.title(class="col-md-12")}}<br>
-        Content:<br>
-        {{ form.text(class="col-md-12") }}<br>
-        tags:<br>
-        {{ form.tags(class="col-md-6") }}<br>
-    </p>
-    <p>
-        <input type="submit" value="Send"/> 
-    </p>
-</form>
+<div>
+    <form action="" method="post" name="send post">
+       
+        <p>
+            Title:<br>
+            {{ form.title(class="col-md-12")}}<br>
+            Content:<br>
+            {{ form.text(class="col-md-12") }}<br>
+            tags:<br>
+            {{ form.tags(class="col-md-6") }}<br>
+        </p>
+        <p>
+            <input type="submit" value="Send"/> 
+        </p>
+    </form>
+</div>
 {% if edit %}
-    <a href="{{url_for('deletePost',post_id=edit)}}" class="btn btn-danger"> Delete post </a>
+    <p><a href="{{url_for('deletePost',post_id=edit)}}" class="btn btn-danger"> Delete post </a></p>
 {% endif %}
 {% endblock %}
 
