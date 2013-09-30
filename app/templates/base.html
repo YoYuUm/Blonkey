@@ -48,10 +48,10 @@
                         <ul class="nav navbar-nav">
                           <li {% if request.path == url_for('index') %}class="active"{% endif %}><a href="{{url_for('index')}}">Home</a></li>
                           {% if user.id %}
-                              <li {% if request.path == url_for('addPost') %}class="active"{% endif %}><a href="{{url_for('addPost')}}">New Post</a></li>
+                              <li {% if request.path == url_for('add_post') %}class="active"{% endif %}><a href="{{url_for('add_post')}}">New Post</a></li>
                               <li {% if request.path == url_for('logout') %}class="active"{% endif %}><a href="{{url_for('logout')}}">Log Out</a></li>
                               {% if user.role == 1 %}
-                                  <li {% if request.path == url_for('manageTags') %}class="active"{% endif %}><a href="{{url_for('manageTags')}}">Manage Tags</a></li>
+                                  <li {% if request.path == url_for('manage_tags') %}class="active"{% endif %}><a href="{{url_for('manage_tags')}}">Manage Tags</a></li>
                                   <li {% if request.path == url_for('register') %}class="active"{% endif %}><a href="{{url_for('register')}}">Create User</a></li>
                               {% endif %}
                           {% else %}

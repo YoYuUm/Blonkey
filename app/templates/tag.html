@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-{% block content %}
-        <h1>Post with the tag {{tag.name}}:</h1>
-        {% if user.role == 1 %}
-            <a href="{{url_for('editTag',tag_id=tag.id)}}" class="btn btn-danger"> Edit tag name </a>
-        {% endif %}
-        {% include "showposts.html" %}
-        
-{% endblock %}
