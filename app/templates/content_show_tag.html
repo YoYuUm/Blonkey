@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+        <h1>Post with the tag {{tag.name}}:</h1>
+        {% if user.role == 1 %}
+            <a href="{{url_for('edit_tag',tag_id=tag.id)}}" class="btn btn-danger"> Edit tag name </a>
+        {% endif %}
+        {% include "mod_iterate_posts.html" %}
+        
+{% endblock %}

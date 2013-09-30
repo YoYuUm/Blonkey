@@ -1,0 +1,24 @@
+ <!-- Pagination -->
+  <div class="pagination">
+    <ul class="pagination">
+    {%- for page in posts.iter_pages() %}
+      {% if page %}
+        {% if page != posts.page %}
+          {% if query %}
+            <li><a href="{{ url_for(endpoint, page=page, query=query) }}">{{ page }}</a></li>
+          {% else %}
+            <li><a href="{{ url_for(endpoint, page=page) }}">{{ page }}</a></li>
+          {% endif %}
+        {% else %}
+          {% if query %}
+            <li><a href="{{ url_for(endpoint, page=page, query=query) }}"><strong>{{ page }}</strong></a></li>
+          {% else %}
+            <li><a href="{{ url_for(endpoint, page=page) }}"><strong>{{ page }}</strong></a></li>
+          {% endif %}  
+        {% endif %}
+      {% else %}
+        <li><span class="ellipsis">…</span></li>
+      {% endif %}
+    {%- endfor %}
+    </ul>
+  </div>

@@ -1,0 +1,83 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+<script type=text/javascript>
+  $(function() {
+   // $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+    $("#submitAdd").click(function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        inputTag=$('input[id="name"]')
+        if (inputTag.val() != "")
+            $.post('/tags/add',inputTag.serialize(), function(data) {
+                if (data.error)
+                    alert(data.error);
+                else
+                    addToTagsList(data);
+                inputTag.val('');
+                inputTag.prop("disabled",false);
+              });
+        inputTag.val('Sending tag...');
+        inputTag.prop("disabled",true);
+    });
+  });
+</script>
+
+<script>
+  //Functions
+    function deleteTag(object){
+    //Gets a button object as parameter and check the ID of the parent
+    //which is the same than the ID of the object to delete
+    //It would be nice to add an "Are you sure to delete?" option
+        tag_id = object.parentNode.id
+        $.post('/tags/del', {
+            id: tag_id,
+          }, function(data) {
+                if (data.error)
+                    alert(data.error);
+                else
+                    console.log("Tag has been deleted")
+          });
+    }
+
+    function addToTagsList(tag){
+        $("#tags").append($('<label></label>')
+                                        .attr("id",tag.id)
+                                        .attr("class","tag label label-success")
+                                        .css("margin", "10 10")
+                                        .css("font-size", "14")
+                            .html('<a href=/tags/'+tag.id+'>'+tag.name+'</a>')
+                            .append('<button type="button" class="close" style="float:none" data-dismiss="alert" onclick="deleteTag(this)">&times;</button>'))    
+                                
+    }
+</script>
+
+<h1>Manage Tags</h1>
+    <p>Tag name:
+        <br/>
+        <form action="" id="addForm" method="post" class="">
+                    {{form.name(size=32)}}
+                    <input id="submitAdd" type="submit" value="Add Tag">
+        </form>
+        <br/>
+    </p>
+
+
+<h2>Available Tags</h2>
+    <p>To delete a tag click in the &times; simbol. Be careful, if you delete a tag it will desappear from all the post the tag was used in. </p>
+    <div id="tags">
+     
+    </div>
+
+    {% for tag in tags %}
+        <script>
+            tag= new Object();
+            tag.id = "{{tag.id}}" ;
+            tag.name = "{{tag.name}}" ;
+            addToTagsList(tag);
+        </script>
+    {% endfor %}
+
+{% endblock %}

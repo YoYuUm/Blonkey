@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<form action="" method="post" name="send post">
+   
+    <p>
+        Name:<br>
+        {{form.name(size=32)}}<br>
+        <input type="submit" value="Update"/> 
+    </p>
+{% endblock %}

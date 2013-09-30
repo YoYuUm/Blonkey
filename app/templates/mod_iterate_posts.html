@@ -1,0 +1,9 @@
+<!--This template show a list of posts, it recive list of posts in a paginate object -->       
+<div>
+{% include "mod_pagination.html" %}
+ {% for post in posts.items %}
+            {% include "template_post.html" %}
+            <hr/>
+  {% endfor %}
+{% include "mod_pagination.html" %}
+</div>ed
