@@ -1,5 +1,5 @@
  <!-- Pagination -->
-  <div class="pagination">
+  <div class="text-center">
     <ul class="pagination">
     {%- for page in posts.iter_pages() %}
       {% if page %}
@@ -11,9 +11,9 @@
           {% endif %}
         {% else %}
           {% if query %}
-            <li><a href="{{ url_for(endpoint, page=page, query=query) }}"><strong>{{ page }}</strong></a></li>
+            <li class="active"><a href="{{ url_for(endpoint, page=page, query=query) }}"><strong>{{ page }}</strong></a></li>
           {% else %}
-            <li><a href="{{ url_for(endpoint, page=page) }}"><strong>{{ page }}</strong></a></li>
+            <li class="active"><a href="{{ url_for(endpoint, page=page) }}"><strong>{{ page }}</strong></a></li>
           {% endif %}  
         {% endif %}
       {% else %}
