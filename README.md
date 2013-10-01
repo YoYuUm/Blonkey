@@ -22,12 +22,13 @@ gunicorn==18.0
 passlib==1.6.1
 six==1.4.1
 
+
 How to run
 ==========
 
 Clone this repository and execute "python run.py"
 
-NOTE: If you want to use your own postgres db you may change the addess in "config.py"
+NOTE: If you want to use your own postgres db you may change the addess in "config.py" and use a different secret key for the CSRF Validation
 
 Live demo @ Heroku
 

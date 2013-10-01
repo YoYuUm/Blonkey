@@ -9,9 +9,8 @@ if os.environ.get('DATABASE_URL') is None:
 else:
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
-#TODO CSRF
-#CSRF_ENABLED = True
-#SECRET_KEY = 'Thisisatrapalatrop'
+CSRF_ENABLED = True
+SECRET_KEY = 'Thisisatrapalatrop'
 # pagination
 POSTS_PER_PAGE = 2
 CHARS_PER_POST_PREVIEW = 200
