@@ -10,4 +10,4 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 
 
-from app import views, models
+from app import views, models, filters
