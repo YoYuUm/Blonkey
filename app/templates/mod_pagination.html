@@ -1,4 +1,5 @@
  <!-- Pagination -->
+ {% if posts.pages > 1 %}
   <div class="text-center">
     <ul class="pagination">
     {%- for page in posts.iter_pages() %}
@@ -22,3 +23,4 @@
     {%- endfor %}
     </ul>
   </div>
+   {% endif %}

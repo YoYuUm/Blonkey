@@ -6,6 +6,7 @@ from flask.ext.login import (login_user, logout_user, current_user,
 from forms import UserForm, LoginForm, PostForm, TagForm
 from models import User, Post, Tag, ROLE_USER, ROLE_ADMIN
 from config import POSTS_PER_PAGE, CHARS_PER_POST_PREVIEW
+from datetime import *
 
 
 @login_manager.user_loader
@@ -22,7 +23,8 @@ def before_request():
 @app.route('/index')
 @app.route('/page/<int:page>')
 def index(page=1):
-    posts = Post.query.order_by(Post.id).paginate(page, POSTS_PER_PAGE, False)
+    posts = Post.query.order_by(Post.id.desc()).paginate(page,
+                                                         POSTS_PER_PAGE, False)
     user = g.user
     return render_template('content_index.html',
                            title='Home',
@@ -142,7 +144,7 @@ def show_tag(page=1, query=0):  # Query is the ID number of the tag
 @app.route("/tags/<int:tag_id>/edit", methods=['GET', 'POST'])
 @login_required
 def edit_tag(tag_id):
-    tag = Tag.query.filter_by(id=tag_id).first_or_404()
+    tag = Tag.query.filter_by(id=tag_id).first()
     if (g.user.role == ROLE_ADMIN):
         form = TagForm(request.form, obj=tag)
         if request.method == 'POST' and form.validate():
@@ -165,7 +167,7 @@ def add_post():
         post = Post()
         form.populate_obj(post)
         post.author_id = g.user.id
-#        post.timestamp = datetime.utcnow()
+        post.timestamp = datetime.utcnow()
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('show_post', post_id=post.id))
@@ -187,14 +189,12 @@ def show_post(post_id):
     return redirect(url_for("index"))
 
 
-
-
 @app.route("/post/<int:post_id>/edit", methods=['GET', 'POST'])
 @login_required
 def edit_post(post_id):
-    # To edit a post, if GET check author and populate form, 
+    # To edit a post, if GET check author and populate form,
     # if POST check author and update
-    post = Post.query.filter_by(id=post_id).first_or_404()
+    post = Post.query.filter_by(id=post_id).first()
     if ((post.author.id == g.user.id) or g.user.role == ROLE_ADMIN):
         form = PostForm(request.form, obj=post)
         if request.method == 'POST' and form.validate():
@@ -215,7 +215,7 @@ def edit_post(post_id):
 @app.route("/post/<int:post_id>/delete")
 @login_required
 def delete_post(post_id):
-    post = Post.query.filter_by(id=post_id).first_or_404()
+    post = Post.query.filter_by(id=post_id).first()
     if ((post.author.id == g.user.id) or g.user.role == ROLE_ADMIN):
         db.session.delete(post)
         db.session.commit()
@@ -255,4 +255,3 @@ def page_not_found(error):
 def internal_error(error):
     # SQLAlchemy should take care of the rollback
     return render_template('error_500.html', user=g.user), 500
-

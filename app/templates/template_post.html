@@ -9,7 +9,7 @@
                         <span class="label label-success"><a href="{{url_for('show_tag', query=tag.id)}}">{{tag.name}}</a></span>
                     {% endfor %}
                 <br/>
-                Published by {{post.author.nickname}}</p>
+                Published by {{post.author.nickname}} {{post.timestamp.strftime("on %d/%m/%Y at %H:%M")}}</p>
 
               </div>
               {% if (user.id == post.author.id) or (user.role == 1) %}
