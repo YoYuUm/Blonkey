@@ -180,7 +180,6 @@ def add_post():
 @app.route('/post/<int:post_id>')
 def show_post(post_id):
     post = Post.query.filter_by(id=post_id).first()
-    print post.text
     if post:
         return render_template('content_show_post.html',
                                title=post.title,

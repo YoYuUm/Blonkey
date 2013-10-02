@@ -7,7 +7,7 @@
     {% else %}
     <h1>Add post</h1>
     {% endif %}
-<div>
+<div class="col-md-12">
     <form action="" method="post" name="send post">
        
         <p>
@@ -24,7 +24,7 @@
     </form>
 </div>
 {% if edit %}
-    <p><a href="{{url_for('delete_post',post_id=edit)}}" class="btn btn-danger"> Delete post </a></p>
+    <div class="text-right"><a href="{{url_for('delete_post',post_id=edit)}}" class="btn btn-danger"> Delete post </a></div>
 {% endif %}
 {% endblock %}
 
