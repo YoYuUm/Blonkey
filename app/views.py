@@ -87,13 +87,11 @@ def manage_tags():
                                form=form)
     return redirect(url_for("index"))
 
-# Called using AJAX
-
 
 @app.route('/tags/add', methods=['POST'])
 @login_required
 def add_tag():
-    # TODO:Add tag to the db if user = admin
+    # Called using AJAX
     if (g.user.role == ROLE_ADMIN):
         form = TagForm(request.form)
         if request.method == 'POST' and form.validate():
@@ -106,13 +104,11 @@ def add_tag():
         return jsonify(error="Not valid Tag")
     return jsonify(error="Not allowed")
 
-# Called using AJAX
-
 
 @app.route('/tags/del', methods=['POST'])
 @login_required
 def delete_tag():
-    # TODO:Add tag to the db if user = admin
+    # Called using AJAX
     if (g.user.role == ROLE_ADMIN):
         tag_id = request.form['id']
         tag = Tag.query.filter_by(id=tag_id).first()
