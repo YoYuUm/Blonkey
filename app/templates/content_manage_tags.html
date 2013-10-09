@@ -57,9 +57,13 @@
 <h1>Manage Tags</h1>
     <p>Tag name:
         <br/>
-        <form action="" id="addForm" method="post" class="">
-                    {{form.name(size=32)}}
-                    <input id="submitAdd" type="submit" value="Add Tag">
+        <form action="" id="addForm" class="form-inline" role="form" method="post" class="">
+            <div class="form-group">  
+                    {{form.name(placeholder="New Tag", class="form-control")}}
+            </div>
+            <div class="form-group">  
+                    <input id="submitAdd" type="submit" class="btn btn-default" value="Add Tag">
+            </div>
         </form>
         <br/>
     </p>

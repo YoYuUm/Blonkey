@@ -4,26 +4,19 @@
 {% block content %}
 <h1>Create user</h1>
 <p>This template is for the creation of users, Only accesible for admins.</p>
-<form action="" method="post" name="login">
-   
-    <p>
-        <p>
-        Please enter the Nickname:<br/>
-        {{form.nickname(class="col-md-6")}}<br/>
-        </p>
-        <p>
-        Password:<br/>
-        {{form.password(class="col-md-6")}}<br/>
-        </p>
-        <p>
-        Email:<br/>
-        {{form.email(class="col-md-6")}}<br/>
-        </p>
-        <p>
-        User will be admin?<br/> 
-        {{form.role()}}
-        </p>
-    </p>
-    <p><input type="submit" value="Create user"></p>
+<form action="" class="form-horizontal col-md-12" role="form" method="post" name="login">
+   <div id="fields" class="form-group">
+        <label for="nickname" class="control-label">Nickname:</label>
+        {{form.nickname(class="form-control")}}    
+        <label for="password" class="control-label">Password:</label>
+        {{form.password(class="form-control")}}
+        <label for="email" class="control-label">Email:</label>
+        {{form.email(class="form-control")}}
+        <label for="role" class="control-label">User Role (1 is admin)</label>
+        {{form.role(class="form-control")}}
+    </div>
+    <div id="buttons" class="form-group">
+        <input type="submit" class="btn btn-default" value="Create user">
+    </div>
 </form>
 {% endblock %}
