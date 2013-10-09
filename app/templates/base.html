@@ -19,6 +19,14 @@
 
           padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
           }
+          /* Small devices (tablets, 768px and up) */
+          @media (min-width: 768px) { /* @screen-sm */
+            
+            .navbar-form{
+              margin-left: -15px;  /*It would be nice if this parameters*/
+              margin-right: -15px; /*inherit from the big navbar-form*/
+            }
+          }
           .label a, .badge a{
               color: white;
           }
@@ -67,8 +75,8 @@
                         </ul>
                         
                         <form action="/post/search" method="get" class="navbar-form navbar-right">
-                                    <input type="text" name="query" class="search-query" placeholder="Search">
-                                    <input type="submit" value="Search" class="btn btn-small">
+                                    <input type="text" name="query" class="input-sm" placeholder="Search">
+                                    <input type="submit" value="Search" class="btn btn-sm">
                         </form>
                     
                     </nav>
