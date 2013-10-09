@@ -3,25 +3,30 @@
 
 {% block content %}
     {% if edit %}
-    <h1>Edit post</h1>
+    <h1>Edit post.</h1>
     {% else %}
-    <h1>Add post</h1>
+    <h1>Create a new post.</h1>
     {% endif %}
 <div class="col-md-12">
     <form action="" class="form-horizontal" role="form" method="post" name="send post">
-        <div class="form-group">
-            <label for="title" class="control-label">Title:</label> <!--Refatorable render...-->
-            {{ form.title(class="form-control col-md-12")}}
+        <div id="fields" class="form-group">
+            <label for="title" class="control-label">Title:</label> <!--Refatorable rendering...-->
+            {{ form.title(class="form-control")}}
             <label for="text" class="control-label">Content:</label>
-            {{ form.text(class="form-control col-md-12") }}
+            {{ form.text(class="form-control") }}
             <label for="tags" class="control-label">Tags:</label>
-            {{ form.tags(class="form-control col-md-6") }}
-            <input type="submit" value="Send"/> 
+            {{ form.tags(class="form-control") }}
+        </div>
+        <div id="buttons" class="form-group">
+            <input type="submit" class="btn btn-md btn-default" value="Send"/>
+            <div class="pull-right">
+                {% if edit %}
+                <a href="{{url_for('delete_post',post_id=edit)}}" class="btn btn-danger text-right"> Delete post </a>
+                {% endif %}
+            </div>
         </div>
     </form>
 </div>
-{% if edit %}
-    <div class="text-right"><a href="{{url_for('delete_post',post_id=edit)}}" class="btn btn-danger"> Delete post </a></div>
-{% endif %}
+
 {% endblock %}
 

@@ -6,3 +6,5 @@ venv/
 #ignore thumbnails created by windows
 Thumbs.db
 us.stackdump
+sublimeproject.sublime-project
+sublimeproject.sublime-workspace
