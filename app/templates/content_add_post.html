@@ -8,19 +8,16 @@
     <h1>Add post</h1>
     {% endif %}
 <div class="col-md-12">
-    <form action="" method="post" name="send post">
-       
-        <p>
-            Title:<br>
-            {{ form.title(class="col-md-12")}}<br>
-            Content:<br>
-            {{ form.text(class="col-md-12") }}<br>
-            tags:<br>
-            {{ form.tags(class="col-md-6") }}<br>
-        </p>
-        <p>
+    <form action="" class="form-horizontal" role="form" method="post" name="send post">
+        <div class="form-group">
+            <label for="title" class="control-label">Title:</label> <!--Refatorable render...-->
+            {{ form.title(class="form-control col-md-12")}}
+            <label for="text" class="control-label">Content:</label>
+            {{ form.text(class="form-control col-md-12") }}
+            <label for="tags" class="control-label">Tags:</label>
+            {{ form.tags(class="form-control col-md-6") }}
             <input type="submit" value="Send"/> 
-        </p>
+        </div>
     </form>
 </div>
 {% if edit %}
