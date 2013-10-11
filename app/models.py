@@ -59,7 +59,7 @@ association_table = db.Table('association',
                              db.Column('post_id', db.Integer,
                                        db.ForeignKey('post.id')),
                              db.Column('tag_id', db.Integer,
-                                       db.ForeignKey('tag.id')))
+                                       db.ForeignKey('tag.id', ondelete='CASCADE')))
 
 
 class PostQuery(BaseQuery, SearchQueryMixin):
