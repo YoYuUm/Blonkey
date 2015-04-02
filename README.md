@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/yoyuum/blonkey.png?label=ready&title=Ready)](https://waffle.io/yoyuum/blonkey)
 Blonkey
 =======
 
